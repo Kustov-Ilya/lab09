@@ -1,157 +1,145 @@
-[![Build Status](https://travis-ci.org/Polly-99/lab06.svg?branch=master)](https://travis-ci.org/Polly-99/lab06)
-## Laboratory work V
+[![Build Status](https://travis-ci.org/Kustov-Ilya/lab06.svg?branch=master)](https://travis-ci.org/Kustov-Ilya/lab06)
+## Laboratory work VI
 
-Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
+Данная лабораторная работа посвещена изучению фреймворков для тестирования на примере **Catch**
 
 ```ShellSession
-$ open https://travis-ci.org
+$ open https://github.com/philsquared/Catch
 ```
 
 ## Tasks
 
-- [x] 1. Авторизоваться на сервисе **Travis CI** с использованием **GitHub** аккаунта
-- [x] 2. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
+- [x] 1. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
+- [x] 2. Выполнить инструкцию учебного материала
 - [x] 3. Ознакомиться со ссылками учебного материала
-- [x] 4. Включить интеграцию сервиса **Travis CI** с созданным репозиторием
-- [x] 5. Получить токен для **Travis CLI** с правами **repo** и **user**
-- [x] 6. Получить фрагмент вставки значка сервиса **Travis CI** в формате **Markdown**
-- [x] 7. Установить [**Travis CLI**](https://github.com/travis-ci/travis.rb#installation)
-- [x] 8. Выполнить инструкцию учебного материала
-- [x] 9. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [x] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
 
 ```ShellSession
-$ export GITHUB_USERNAME=<имя_пользователя>
-$ export GITHUB_TOKEN=<полученный_токен>
+$ export GITHUB_USERNAME=Kustov-Ilya
 ```
-Создание директории новой лабы на основе предыдущей
+
+Создание директории лабораторной на основе предыдущей
 ```ShellSession
-$ git clone https://github.com/${GITHUB_USERNAME}/lab04 lab06
+$ git clone https://github.com/${GITHUB_USERNAME}/lab05 lab06
 $ cd lab06
 $ git remote remove origin
 $ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 ```
-Редактирование travis.yml
+
+Скачивание библиотеки Catch и создание main с включенной билиотекой
 ```ShellSession
-$ cat > .travis.yml <<EOF
-language: cpp
+$ mkdir tests #создание директории 
+#получение catch.hpp с сайта в директорию tests
+$ wget https://github.com/philsquared/Catch/releases/download/v1.9.3/catch.hpp -O tests/catch.hpp 
+$ cat > tests/main.cpp <<EOF # создание и редактирование файла main.cpp в tests
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
 EOF
 ```
 
+Создание CMakeLists.txt
 ```ShellSession
-$ cat >> .travis.yml <<EOF
-
-script:
-- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
-- cmake --build _build
-- cmake --build _build --target install
+$ sed -i '/option(BUILD_EXAMPLES "Build examples" OFF)/a\ #добавление строки в потоковый редактор
+option(BUILD_TESTS "Build tests" OFF)
+' CMakeLists.txt
+$ cat >> CMakeLists.txt <<EOF # редактирование 
+if(BUILD_TESTS)
+	enable_testing() #включение теста
+	file(GLOB \${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)   # поиск файла по заданному шаблону
+	add_executable(check \${\${PROJECT_NAME}_TEST_SOURCES})
+	target_link_libraries(check \${PROJECT_NAME} \${DEPENDS_LIBRARIES})
+	#параметры теста. -s = успешные выполнения теста. -r compact = формат вывода
+	add_test(NAME check COMMAND check "-s" "-r" "compact" "--use-colour" "yes") 
+endif()
 EOF
 ```
 
+Создание теста
 ```ShellSession
-$ cat >> .travis.yml <<EOF
+$ cat >> tests/test1.cpp <<EOF
+#include "catch.hpp"
+#include <print.hpp>
 
-addons:
-  apt:
-    sources:
-      - george-edison55-precise-backports
-    packages:
-      - cmake
-      - cmake-data
+TEST_CASE("output values should match input values", "[file]") {
+  std::string text = "hello";
+  std::ofstream out("file.txt");
+  
+  print(text, out);
+  out.close();
+  
+  std::string result;
+  std::ifstream in("file.txt");
+  in >> result;
+  
+  REQUIRE(result == text);
+}
 EOF
 ```
-Записывание токена
+
+Сборка проекта и запуск теста после сборки
 ```ShellSession
-$ travis login --github-token ${GITHUB_TOKEN}
+$ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON
+$ cmake --build _build
+$ cmake --build _build --target test 
+Running tests...
+Test project /home/ilya/lab06/_build
+    Start 1: check
+1/1 Test #1: check ............................  Passed   0.03 sec.
+
+100% tests passed, 0 tests faild out of 1
+
+Total Test time (real) =  0.04 sec
+
 ```
 
-Проверка работоспособности .travis.yml
+Изменение файлов
+```ShellSession
+$ sed -i 's/lab05/lab06/g' README.md # замена "lab05" на "lab06"
+$ sed -i 's/\(DCMAKE_INSTALL_PREFIX=_install\)/\1 -DBUILD_TESTS=ON/' .travis.yml # дополнение
+$ sed -i '/cmake --build _build --target install/a\ #добавление строки после данной
+- cmake --build _build --target test #запуск теста после сборки
+' .travis.yml
+```
+
+Проверка  .travis.yml
 ```ShellSession
 $ travis lint
 ```
-Вставка значка в файл отчета
+
+Коммит
 ```ShellSession
-$ ex -sc '1i|<фрагмент_вставки_значка>' -cx README.md
-```
-Коммит изменений
-```ShellSession
-$ git add .travis.yml
-$ git add README.md
-$ git commit -m"added CI"
+$ git add .
+$ git commit -m"added tests"
 $ git push origin master
 ```
 
-Комманды trevis
+Активация проекта
 ```ShellSession
-$ travis lint
-Warnings for .travis.yml:
-[x] value for addons section is empty, dropping
-[x] in addons section: unexpected key apt, dropping
+$ travis login --auto #Вход в travis
+$ travis enable
+```
 
-$ travis accounts #вывод аккаунтов и их статусов
-Polly-99 (Polly-99): subscribed, 7 repositories
-
-$ travis sync #синхронизация
-synchronizing: . done
-
-$ travis repos  #вывод репозиториев и их активности
-Polly-99/Game (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/Semestr_2 (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/Semestr_3 (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/TMP (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/lab03 (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/lab04 (active: no, admin: yes, push: yes, pull: yes)
-Description: ???
-
-Polly-99/lab06 (active: yes, admin: yes, push: yes, pull: yes)
-Description: ???
-
-$ travis enable #активация проекта
-Detected repository as Polly-99/lab06, is this correct? |yes| yes
-Polly-99/lab06: enabled :)
-
-$ travis whatsup  #вывод последних действий с файлами
-Polly-99/lab06 passed: #1
-
-$ travis branches #вывод веток
-master:  #1    passed   added CI
-
-$ travis history #вывод истории
-#1 passed:    master added CI  
-
-$ travis show #вывод информации о сборках
-Job #1.1:   added CI
-State:         passed
-Type:          push
-Branch:        master
-Compare URL:   https://github.com/Polly-99/lab06/compare/5f092b62ae7b^...830a918fce22
-Duration:      31 sec
-Started:       2017-10-07 21:51:44
-Finished:      2017-10-07 21:52:15
-Allow Failure: false
-Config:        os: linux
+Снимок экрана и сохранение в созданную папку
+```ShellSession
+$ mkdir artifacts
+$ screencapture -T 20 artifacts/screenshot.jpg
+<Command>-T
+$ open https://github.com/${GITHUB_USERNAME}/lab06
 ```
 
 ## Report
 
-Создание отчета
 ```ShellSession
+Создание отчета
 $ cd ~/workspace/labs/
-$ export LAB_NUMBER=05
+$ export LAB_NUMBER=06
 $ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
 $ mkdir reports/lab${LAB_NUMBER}
 $ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
 $ cd reports/lab${LAB_NUMBER}
 $ edit REPORT.md
 $ gistup -m "lab${LAB_NUMBER}"
+```
+```
