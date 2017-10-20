@@ -17,8 +17,8 @@ $ open https://www.stack.nl/~dimitri/doxygen/manual/index.html
 ## Tutorial
 Задание переменной окружения
 ```ShellSession
-$ export GITHUB_USERNAME=n0k8t
-$ alias edit=nano
+$ export GITHUB_USERNAME=Kustov-Ilya
+$ alias edit=vi
 ```
 Клонирование репозитория
 ```ShellSession
