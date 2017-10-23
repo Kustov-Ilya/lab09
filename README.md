@@ -20,7 +20,8 @@ $ open https://www.stack.nl/~dimitri/doxygen/manual/index.html
 $ export GITHUB_USERNAME=Kustov-Ilya
 $ alias edit=vi
 ```
-Клонирование репозитория
+
+
 ```ShellSession
 $ git clone https://github.com/${GITHUB_USERNAME}/lab07 lab07
 $ cd lab07
@@ -33,14 +34,14 @@ $ mkdir docs
 $ doxygen -g docs/doxygen.conf
 $ cat docs/doxygen.conf
 ```
-Формирование операций для редактирования
+
 ```ShellSession
-$ sed -i '' 's/\(PROJECT_NAME.*=\).*$/\1 print/g' docs/doxygen.conf
-$ sed -i '' 's/\(EXAMPLE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf
-$ sed -i '' 's/\(INCLUDE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf
-$ sed -i '' 's/\(INPUT *=\).*$/\1 README.md include/g' docs/doxygen.conf
-$ sed -i '' 's/\(USE_MDFILE_AS_MAINPAGE.*=\).*$/\1 README.md/g' docs/doxygen.conf
-$ sed -i '' 's/\(OUTPUT_DIRECTORY.*=\).*$/\1 docs/g' docs/doxygen.conf
+$ sed -i  's/\(PROJECT_NAME.*=\).*$/\1 print/g' docs/doxygen.conf #устанавливает название проекта print
+$ sed -i  's/\(EXAMPLE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf #устанавливает путь к examples
+$ sed -i  's/\(INCLUDE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf #устанавливает путь к examples, где есть include
+$ sed -i  's/\(INPUT *=\).*$/\1 README.md include/g' docs/doxygen.conf #устанавливает INPUT равным print
+$ sed -i  's/\(USE_MDFILE_AS_MAINPAGE.*=\).*$/\1 README.md/g' docs/doxygen.conf  # Указание файла README.md как основого
+$ sed -i  's/\(OUTPUT_DIRECTORY.*=\).*$/\1 docs/g' docs/doxygen.conf #  Указание пути к каталогу doc
 ```
 
 ```ShellSession
@@ -62,12 +63,12 @@ $ git push origin master
 $ travis login --auto
 $ travis enable
 ```
-
+Работа с файлами doxygen
 ```
 $ doxygen docs/doxygen.conf
 $ ls | grep "[^docs]" | xargs rm -rf  # фильтр файла для удаления
 $ mv docs/html/* . && rm -rf docs     # переименовывание и перемещение файла
-$ git checkout -b gh-pages            # создание gh-page
+$ git checkout -b gh-pages            # создание ветки gh-page
 $ git add .
 $ git commit -m"added documentation"  
 $ git push origin gh-pages            
@@ -82,7 +83,7 @@ $ open https://${GITHUB_USERNAME}.github.io/lab07/print_8hpp_source.html    # о
 $ gdrive upload screenshot.jpg # или png
 $ SCREENSHOT_ID=`gdrive list | grep screenshot | awk '{ print $1; }'`
 $ gdrive share ${SCREENSHOT_ID} --role reader --type user --email rusdevops@gmail.com
-$ echo https://drive.google.com/open?id=${SCREENSHOT_ID}
+$ echo https://drive.google.com/open?id=${SCREENSHOT_ID} #вывод ссылки на скриншот
 ```
 
 ## Report
