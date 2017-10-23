@@ -38,9 +38,11 @@ $ cat docs/doxygen.conf
 ```ShellSession
 $ sed -i  's/\(PROJECT_NAME.*=\).*$/\1 print/g' docs/doxygen.conf #устанавливает название проекта print
 $ sed -i  's/\(EXAMPLE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf #устанавливает путь к examples
-$ sed -i  's/\(INCLUDE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf #устанавливает путь к examples, где есть include
+#устанавливает путь к examples, где есть include
+$ sed -i  's/\(INCLUDE_PATH.*=\).*$/\1 examples/g' docs/doxygen.conf 
 $ sed -i  's/\(INPUT *=\).*$/\1 README.md include/g' docs/doxygen.conf #устанавливает INPUT равным print
-$ sed -i  's/\(USE_MDFILE_AS_MAINPAGE.*=\).*$/\1 README.md/g' docs/doxygen.conf  # Указание файла README.md как основого
+# Указание файла README.md как основого
+$ sed -i  's/\(USE_MDFILE_AS_MAINPAGE.*=\).*$/\1 README.md/g' docs/doxygen.conf  
 $ sed -i  's/\(OUTPUT_DIRECTORY.*=\).*$/\1 docs/g' docs/doxygen.conf #  Указание пути к каталогу doc
 ```
 
