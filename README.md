@@ -63,14 +63,14 @@ $ github-release --version
 github-release v0.7.2
 $ github-release info -u ${GITHUB_USERNAME} -r lab09   #информация о релизах
 tags:
-- v0.1.0.0 (commit: https://api.github.com/repos/Kustov-Ilya/lab09/commits/52358cdd2c8073668109d6d712fda538babbf3ce)
+- v0.1.0.0 (commit: https://api.github.com/repos/Kustov-Ilya/lab09/commits/c949b14fe1d4685e6da95b8fe7038c2da3998322)
 releases:
 $ github-release release \                             #новый релиз
     --user ${GITHUB_USERNAME} \
     --repo lab09 \
     --tag v0.1.0.0 \
     --name "libprint" \
-    --description "my first release"
+    --description "v0.1.0.0"
 ```
 
 ```ShellSession
@@ -87,12 +87,12 @@ $ github-release upload \                              #загрузка рел�
 ```ShellSession
 $ github-release info -u ${GITHUB_USERNAME} -r lab09
 tags:
-- v0.1.0.0 (commit: https://api.github.com/repos/Kustov-Ilya/lab09/commits/52358cdd2c8073668109d6d712fda538babbf3ce)
+- v0.1.0.0 (commit: https://api.github.com/repos/Kustov-Ilya/lab09/commits/c949b14fe1d4685e6da95b8fe7038c2da3998322)
 releases:
-- v0.1.0.0, name: 'libprint', description: 'my first release', id: 8299765, tagged: 29/10/2017 at 12:43, published: 29/10/2017 at 12:46, draft: ✗, prerelease: ✗
+- v0.1.0.0, name: 'libprint', description: 'v0.1.0.0', id: 25667039, tagged: 29/10/2017 at 12:43, published: 29/10/2017 at 12:46, draft: ✗, prerelease: ✗
   - artifact: print-Linux-x86_64.tar.gz, downloads: 0, state: uploaded, type: application/octet-stream, size: 2.8 kB, id: 5191607
-$ wget https://github.com/${GITHUB_USERNAME}/lab09/releases/download/v0.1.0.0/${PACKAGE_FILENAME}
-$ tar -ztf ${PACKAGE_FILENAME}
+$ wget https://github.com/${GITHUB_USERNAME}/lab09/releases/download/v0.1.0.0/${PACKAGE_FILENAME}   #Скачивание
+$ tar -ztf ${PACKAGE_FILENAME}  #разархивирование
 print-..0.0-Linux/cmake/
 print-..0.0-Linux/cmake/print-config.cmake
 print-..0.0-Linux/cmake/print-config-noconfig.cmake
